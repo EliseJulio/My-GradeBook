@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from student import Student
 from course import Course
 from gradebook import GradeBook
