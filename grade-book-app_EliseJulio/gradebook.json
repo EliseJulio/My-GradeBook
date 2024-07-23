@@ -1,0 +1,19 @@
+{
+    "students": [
+        {
+            "email": "elise@gmail.com",
+            "names": "Elise",
+            "courses_registered": [
+                "Comp"
+            ],
+            "GPA": 4.0
+        }
+    ],
+    "courses": [
+        {
+            "name": "Comp",
+            "trimester": "Sem 2",
+            "credits": 20
+        }
+    ]
+}
