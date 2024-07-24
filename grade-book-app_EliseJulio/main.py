@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-
 import json
-
 class Student:
     def __init__(self, email, names):
         self.email = email
@@ -21,9 +19,7 @@ class Student:
         self.courses_registered.append(course)
 
     def get_grade_point(self, course):
-        # Placeholder method to determine grade points for a course.
-        # Implement the logic based on your grading system.
-        return 4.0  # Assuming full points for each course for simplicity.
+        return 4.0 
 
     def to_dict(self):
         return {
