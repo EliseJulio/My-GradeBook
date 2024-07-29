@@ -19,6 +19,37 @@ class Student:
     def register_for_course(self, course, grade):
         self.courses_registered.append({'course': course, 'grade': grade, 'credits': course.credits})
 
+    def to_dict(self):
+        return {
+            'email': self.email,
+            'names': self.names,
+            'courses_registered': [
+                {
+                    'course': {
+                        'name': cr['course'].name,
+                        'trimester': cr['course'].trimester,
+                        'credits': cr['course'].credits
+                    },
+                    'grade': cr['grade'],
+                    'credits': cr['credits']
+                } for cr in self.courses_registered
+            ],
+            'GPA': self.GPA
+        }
+
+    @staticmethod
+    def from_dict(data):
+        student = Student(data['email'], data['names'])
+        student.GPA = data['GPA']
+        student.courses_registered = [
+            {
+                'course': Course(cr['course']['name'], cr['course']['trimester'], cr['course']['credits']),
+                'grade': cr['grade'],
+                'credits': cr['credits']
+            } for cr in data['courses_registered']
+        ]
+        return student
+
 
 class Course:
     def __init__(self, name, trimester, credits):
@@ -26,30 +57,60 @@ class Course:
         self.trimester = trimester
         self.credits = credits
 
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'trimester': self.trimester,
+            'credits': self.credits
+        }
+
+    @staticmethod
+    def from_dict(data):
+        return Course(data['name'], data['trimester'], data['credits'])
+
 
 class GradeBook:
     def __init__(self):
-        self.student_list = []
-        self.course_list = []
+        self.student_list = self.load_data('students.json')
+        self.course_list = self.load_data('courses.json')
+
+    def save_data(self, filename, data):
+        with open(filename, 'w') as f:
+            json.dump(data, f, indent=4)
+
+    def load_data(self, filename):
+        try:
+            with open(filename, 'r') as f:
+                data = json.load(f)
+                if filename == 'students.json':
+                    return [Student.from_dict(student) for student in data]
+                elif filename == 'courses.json':
+                    return [Course.from_dict(course) for course in data]
+        except FileNotFoundError:
+            return []
 
     def add_student(self, email, names):
         student = Student(email, names)
         self.student_list.append(student)
+        self.save_data('students.json', [s.to_dict() for s in self.student_list])
 
     def add_course(self, name, trimester, credits):
         course = Course(name, trimester, credits)
         self.course_list.append(course)
+        self.save_data('courses.json', [c.to_dict() for c in self.course_list])
 
     def register_student_for_course(self, student_email, course_name, grade):
         student = self._find_student_by_email(student_email)
         course = self._find_course_by_name(course_name)
         if student and course:
             student.register_for_course(course, grade)
+            self.save_data('students.json', [s.to_dict() for s in self.student_list])
 
     def calculate_GPA(self, student_email):
         student = self._find_student_by_email(student_email)
         if student:
             student.calculate_GPA()
+            self.save_data('students.json', [s.to_dict() for s in self.student_list])
             return student.GPA
         return None
 
@@ -158,4 +219,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
