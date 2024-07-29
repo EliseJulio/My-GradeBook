@@ -157,7 +157,14 @@ class GradeBook:
 def main():
     gradebook = GradeBook()
     while True:
+        print("**********************")
         print("Grade Book Application")
+        print("**********************")
+        print("----------------------")
+        print("       Main Menu      ")
+        print("----------------------")
+        print("Grade Book Application")
+        print("----------------------")
         print("1. Add Student")
         print("2. Add Course")
         print("3. Register Student for Course")
